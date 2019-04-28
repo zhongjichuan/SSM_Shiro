@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:repository="http://www.springframework.org/schema/data/repository"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:cxf="http://cxf.apache.org/core"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.2.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+		http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository-1.5.xsd
+		http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd"
+	default-lazy-init="true">
+	
+	<!-- Job的两种方式 -->
+	<!-- 1 job类需要继承Job类，此种方式麻烦但灵活 -->
+	<bean id="HelloQuartzJob"
+		class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+		<property name="jobClass"
+			value="com.quartz.Job.HelloQuartzJob" />
+		<property name="jobDataMap">
+			<map>
+				<entry key="jobMessage" value="jobMessage====" />
+			</map>
+		</property>
+		<property name="Durability" value="true"/>	<!-- 持久化 -->			
+	</bean>
+	
+	<!-- 触发器 -->
+	<!-- 距离当前时间1秒之后执行，之后每隔两秒钟执行一次 -->
+	<bean id="mySimpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	    <property name="jobDetail"  ref="HelloQuartzJob"/>
+	    <property name="startDelay"  value="1000"/>
+	    <property name="repeatInterval"  value="2000"/>
+	</bean>
+	
+	<!-- 调度器 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="jobDetails">
+	        <list>
+	            <ref bean="HelloQuartzJob"/>
+	          <!--   <ref bean="firstComplexJobDetail"/> -->
+	        </list>
+	    </property>
+	    <property name="triggers">
+	        <list>
+	            <ref bean="mySimpleTrigger"/>
+	            <!-- <ref bean="myCronTrigger"/> -->
+	        </list>
+	    </property>
+	</bean>
+	
+</beans>

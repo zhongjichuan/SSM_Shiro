@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- defaultdir 装饰器的存放路径 -->
+<decorators defaultdir="/WEB-INF/layouts">
+
+    <!-- 默认装饰页面, 在需要装饰的页面增加<meta name="decorator" content="default"/> -->
+    
+    <!-- name装饰器的名字， page装饰器对应的页面-->
+    <decorator name="blank" page="main.jsp">
+    	<!-- 拦截的请求 -->
+    	<pattern>/siteMesh/*</pattern>
+    </decorator> 
+    
+    <decorator name="panle" page="panle.jsp">
+    </decorator>
+    
+    <!-- 不用过滤的请求 -->
+    <excludes>
+    </excludes>
+</decorators>
